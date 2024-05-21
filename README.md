@@ -5,7 +5,7 @@
 ```
 ### 建议node版本 
 16.20.0 - 17.0.0
-# 启动指令
+### 启动指令
 ```
 npm install
 npm run dev 测试环境
@@ -20,6 +20,6 @@ npm run build:prod 生产打包
 
 # template/admin
 ```
-前端：react+typescript
+前端：react+typescript+vite
 ui组件库：antDesign 5.0
 ```
