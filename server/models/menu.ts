@@ -9,7 +9,6 @@ export default class MenuModel extends Model {
     @Column({
         primaryKey: true,
         autoIncrement: true,
-            
     })
     id?: number;
 

@@ -44,9 +44,20 @@ export default class RoleModel extends Model {
     })
     level?: string;
 
-    @ForeignKey(() => MenuModel)
-    menuIds: MenuModel[] = [];
+    // @ForeignKey(() => MenuModel)
+    @Column({
+        type: DataType.STRING,
+        comment: '菜单ID集合',
+        allowNull: true,
+        get() {
+            return this.getDataValue('menuIds').split(',');
+        },
+        set(value: number[]) {
+            return this.setDataValue('menuIds', value.join(','));
+        }
+    })
+    menuIds: number[] = [];
 
-    @BelongsTo(() => MenuModel)
-    menus: MenuModel[];
+    // @BelongsTo(() => MenuModel)
+    // menus: MenuModel[];
 }
