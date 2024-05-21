@@ -25,3 +25,31 @@ export function setQueryPayload<T>(object: T & ICommonPaginatin) {
     }
     return newObj as Omit<T, 'current' | 'pageSize'> & { offset: number, limit: number };
 }
+
+type CombineChildrenOptions = {
+    id: string,
+    parentId: string,
+    children: string
+}
+export function combineChildren<T>(data: T[], options: CombineChildrenOptions = {
+    id: 'id',
+    parentId: 'parentId',
+    children: 'children'
+}) {
+    const tree: T[] = [];
+    const fn = (list: T[]) => {
+        for (let index = 0; index < list.length; index++) {
+            const item = list[index];
+            const findItem = list.find(v => v[options.id] === item[options.parentId]);
+            if (findItem) {
+                if (!findItem[options.children]) findItem[options.children] = [];
+                findItem[options.children].push(item);
+            } else {
+                tree.push(item);
+            }
+        }
+        return list;
+    }
+    fn(data);
+    return tree;
+}
