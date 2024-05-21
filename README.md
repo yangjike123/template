@@ -14,7 +14,9 @@ npm run dev:prod 生产环境
 npm run build:prod 生产打包
 ```
 #### 数据库
+```
 "mysql2": "^3.9.7"
+```
 
 # template/admin
 ```
