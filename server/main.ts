@@ -1,11 +1,9 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import index from "./routes/index";
-import { HttpCode } from "../types/httpCode";
 import varifyJwt from "./utils/verifyJwt";
 import config from "./config";
 import cookieParser from "cookie-parser";
 import { Sequelize } from "sequelize-typescript";
-import { Dialect } from "sequelize/types/sequelize";
 import session from "express-session";
 
 const app = express();
@@ -14,22 +12,20 @@ const port = process.env.PORT || 3000;
 const environmental = process.env.NODE_ENV === 'development' ? 'development' : 'production';
 const ENVBOL = process.env.NODE_ENV === 'development';
 function initModels() {
-  const { dataBaseName, account, password, host, port, dialect } = config.dbConfig[environmental];
+  const { database, username, password, host, port, dialect, define, timezone } = config.dbConfig[environmental];
   const sequelize = new Sequelize({
-    database: dataBaseName,
-    username: account,
-    password: password,
-    dialect: dialect as Dialect,
+    database,
+    username,
+    password,
     host,
     port,
-    define: {
-      timestamps: false, // 关闭自动添加时间戳
-    },
-    timezone: '+08:00', //东八时区
-    logging: ENVBOL ? console.log : false, // 设置日志输出
-    models: [__dirname + '/models/*.ts'], // 自动引入models文件夹下的所有模块
+    dialect,
+    define,
+    timezone,
+    logging: ENVBOL && console.log, // 设置日志输出
+    models: [__dirname + '/models/*.ts'], // 自动引入models文件夹下的所有模
   });
-  sequelize.sync({ force: false, alter: false }).then(() => {
+  sequelize.sync({ force: false, alter: true }).then(() => {
     console.log('success');
   }).catch((err) => {
     console.log(err);
