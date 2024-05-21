@@ -7,7 +7,6 @@
 
 import { Column, Model, Table, DataType, ForeignKey, HasMany, BelongsTo, Unique } from "sequelize-typescript";
 import { EUserLevel } from "../../types/enum";
-import MenuModel from "./menu";
 
 @Table({
     tableName: 'roles',
