@@ -26,7 +26,7 @@ async function createMenu(req: Request, res: Response) {
 async function getMenu(req: Request, res: Response) {
     try {
         const data = await MenuModel.findAll();
-        const tree = combineChildren<IMenu[]>(JSON.parse(JSON.stringify(data)));
+        const tree = combineChildren<IMenu>(JSON.parse(JSON.stringify(data)));
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
             message: HttpCodeMsg.Ok,
