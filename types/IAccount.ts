@@ -27,6 +27,6 @@ export interface IAccountDetail extends ICommonResultObject<Omit<IAccount, 'pass
 };
 
 export interface IAccountLogin extends Pick<IAccount, "account" | "password"> {
-    // code: string;
+    code: string;
 };
 export interface IAccountDelete extends Pick<ICommonField, 'id'> { };
