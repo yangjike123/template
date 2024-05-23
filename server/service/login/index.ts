@@ -43,7 +43,7 @@ async function getCode(req: Request, res: Response) {
         size: 6, //验证码长度
         fontSize: 45, //验证码字号
         noise: 2, //干扰线条数目
-        width: 130, //宽度
+        width: 100, //宽度
         height: 36, //高度
         color: true, //验证码字符是否有颜色，默认是没有，但是如果设置了背景颜色，那么默认就是有字符颜色
         background: '#ccc' //beijing
