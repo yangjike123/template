@@ -1,6 +1,7 @@
 import { SequelizeOptions } from "sequelize-typescript";
 const ENVBOL = process.env.NODE_ENV === 'development';
 // console.log('process.env.NODE_ENV: ', ENVBOL);
+import { ECookies } from "../../types/ECookies";
 interface Config {
     dbConfig: {
         development: SequelizeOptions;
@@ -24,7 +25,7 @@ export default {
                 timestamps: false, // 关闭自动添加时间戳
             },
             timezone: '+08:00', //东八时区
-          
+
         },
         production: { // 测试环境数据库链接
             database: 'test',
@@ -41,7 +42,7 @@ export default {
         }
     },
     apiPrefix: '/v1/api',
-    cookieName: 'TOKEN_COOKIE',
+    cookieName: ECookies.TOKENCOOKIENAME,
     sessionSecretKey: 'secretKey',
     jwtSecret: 'jwtCode606355683',
 } as Config;
