@@ -3,8 +3,9 @@ import index from "./routes/index";
 import varifyJwt from "./utils/verifyJwt";
 import config from "./config";
 import cookieParser from "cookie-parser";
-import { Sequelize } from "sequelize-typescript";
 import session from "express-session";
+import cors from "cors";
+import { Sequelize } from "sequelize-typescript";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -34,12 +35,8 @@ function initModels() {
 }
 initModels();
 
-// 允许跨域
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
+app.use(cors());// 允许跨域
 app.use(express.json()); // 允许json传输格式
 app.use(express.urlencoded({ extended: false })); // 允许urlencoded传输格式
 app.use(cookieParser()); // cookie 设置

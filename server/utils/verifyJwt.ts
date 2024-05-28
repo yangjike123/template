@@ -11,8 +11,8 @@ export default async function varifyJwt(req: Request, res: Response, next: NextF
         const url = req.url.replace(config.apiPrefix, '');
         if (whiteList.includes(url)) return next(); // 如果在白名单内跳过
         else { // 不在白名单内校验token
-            if (!req.cookies[config.cookieName]) throw HttpCodeMsg.Unauthorized; // 如果没有token结束返回
-            const { userId } = jwt.verify(req.cookies[config.cookieName], config.jwtSecret) as IJwtInfo & JwtPayload;
+            if (!req.headers.authorization) throw HttpCodeMsg.Unauthorized; // 如果没有token结束返回
+            const { userId } = jwt.verify(req.headers.authorization, config.jwtSecret) as IJwtInfo & JwtPayload;
             if (!userId) throw HttpCodeMsg.Unauthorized; // 如果里面没有userId结算返回
             else {
                 const user = await AccountModel.findByPk(userId);
