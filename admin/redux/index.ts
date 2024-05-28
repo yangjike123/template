@@ -1,15 +1,33 @@
-import { configureStore } from "@reduxjs/toolkit";
-import stores from '../src/api/index';
+// import { init } from '@rematch/core';
+// import { useSelector } from 'react-redux'
+// import models from '../src/model/index';
+// export default function initModel() {
+//     return init({
+//         models: createModel(),
+//     });
+// };
 
-function createReducer() {
-    const reducers = {};
-    for (let index = 0; index < stores.length; index++) {
-        const store = stores[index];
-        Object.assign(reducers, { [store.name]: store });
-    }
-    return reducers;
-}
-const store = configureStore({
-    reducer: createReducer()
-});
-export default store;
+// function createModel() {
+//     const obj = {};
+//     for (let index = 0; index < models.length; index++) {
+//         const item = models[index];
+//         Object.assign(obj, { [item.name as string]: item });
+//     }
+
+//     return obj; // 返回一个对象
+// }
+
+// export async function useDispaatchFunc(key: string, fnKey: string, payload?: any) {
+//     const { dispatch } = initModel();
+//     // console.log('getState: ', getState());
+//     return dispatch({
+//         type: [key, fnKey].join('/'),
+//         payload
+//     });
+// }
+
+// export function getState(key: string) {
+//     const result = useSelector((state: any) => state[key])
+//     return result;
+// }
+
