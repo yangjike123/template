@@ -8,7 +8,7 @@ export interface IMenu extends ICommonField {
     // 菜单路径
     path: string;
     // 菜单图标
-    icon: string;
+    icon: string | any;
     // 菜单子项
     children?: IMenu[];
     // 是否隐藏菜单
@@ -18,9 +18,10 @@ export interface IMenu extends ICommonField {
     // 父级id
     parentId?: number;
     // 组件路径
-    component?: string;
+    component?: string | any;
     // 菜单排序
     sort?: number | 0;
+    [key: string]: any;
 }
 
 // 创建菜单
@@ -35,6 +36,6 @@ export interface ISearchMenuParams extends Partial<Pick<IMenu, 'name' | 'path'>>
     endTime?: string;
 };
 // 菜单详情
-export interface IMenuDetail extends ICommonResultObject<IMenu> {};
+export interface IMenuDetail extends ICommonResultObject<IMenu> { };
 // 删除菜单
 export interface IDeleteMenu extends Pick<IMenu, 'id'> { };

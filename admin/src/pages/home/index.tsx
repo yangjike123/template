@@ -1,7 +1,7 @@
 export default ()=> {
     return (
         <main>
-            123123
+            ssss
         </main>
     )
 }

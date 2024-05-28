@@ -1,21 +1,27 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useState } from 'react';
-import { getToken } from '../utils/request';
-import { PageLoading } from '@ant-design/pro-components';
-import NotFound from "./404";
-import router from '../router';
-import './App.css';
+import { PageContainer, PageLoading, ProCard, ProLayout, ProSettings, SettingDrawer } from '@ant-design/pro-components';
 import { getUserInfo } from "./api/login";
 import { ELoginStatus } from "../utils/Enum";
 import { IAccount } from "../../types/IAccount";
+import defaultRoute from '../router';
+import Login from "./pages/login";
+import './App.css';
+import { IMenu } from "../../types/IMenu";
 
 function App() {
-  const notShowMenu = ['/login', '/404'];
-  const token = getToken();
   const onNav = useNavigate();
-  const [isLogin, setIsLogin] = useState(ELoginStatus.Loading);
+  const [isLogin, setIsLogin] = useState<ELoginStatus>(ELoginStatus.Loading);
   const [userInfo, setUserInfo] = useState<IAccount | null>(null);
-  
+  const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
+    "fixSiderbar": true,
+    "layout": "mix",
+    "splitMenus": true,
+    "navTheme": "light",
+    "contentWidth": "Fluid",
+    "colorPrimary": "#1677FF",
+    "siderMenuType": "sub"
+  });
   async function getUserInfoData() {
     try {
       setIsLogin(ELoginStatus.Loading);
@@ -26,30 +32,98 @@ function App() {
       setIsLogin(ELoginStatus.NotAuthorization);
     }
   }
+  function onNavigate(path: string) {
+    const findRoute = defaultRoute.route.routes.find(item => item.path === path);
+    const children = findRoute?.children;
+    if (children) {
+      onNav(children[0].path);
+    } else {
+      onNav(path);
+    }
+  }
   useEffect(() => {
-    if (!token) onNav('/login');
     getUserInfoData();
   }, [])
+  const routerRender = (
+    <Suspense fallback={<PageLoading />}>
+      <Routes>
+        {defaultRoute.route.routes.map((item) => {
+          return (
+            <Route
+              key={item.path}
+              path={item.path}
+              element={item.component && <item.component />}
+            >
+              {
+                item.children && item.children.length > 0 && item.children.map((child: IMenu) => {
+                  return (
+                    <Route
+                      key={child.path}
+                      path={child.path}
+                      element={child.component && <child.component />}
+                    />
+                  )
+                })
+              }
+            </Route>
+          )
+        })}
+      </Routes>
+    </Suspense>
+  )
   return (
-    <>
-      <Suspense fallback={<PageLoading />}>
-        <Routes>
-          {
-            router.map((item) => {
+    <div
+      id="test-pro-layout"
+      style={{
+        height: '100vh',
+      }}>
+      {
+        isLogin === ELoginStatus.NotAuthorization ?
+          <Login /> :
+          <ProLayout
+            menuFooterRender={(props) => {
+              if (props?.collapsed) return undefined;
               return (
-                <Route
-                  key={item.path}
-                  path={item.path}
-                  element={<item.component></item.component>}
-                ></Route>
-              )
-            })
-          }
-          {/* 默认404界面 */}
-          <Route path="*" element={NotFound()}></Route>
-        </Routes>
-      </Suspense>
-    </>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    paddingBlockStart: 12,
+                  }}
+                >
+                  <div>© 2024 Made with love</div>
+                  <div>by Ant Design</div>
+                </div>
+              );
+            }}
+            menuItemRender={(item, dom) => {
+              return <div onClick={() => onNavigate(item.path as string)}>{dom}</div>
+            }}
+            location={{
+              pathname: window.location.pathname,
+            }}
+            {...defaultRoute}
+            {...settings}
+          >
+            <PageContainer title={false}>
+              <ProCard
+                style={{
+                  height: '100vh',
+                  minHeight: 800,
+                }}>
+                {routerRender}
+              </ProCard>
+            </PageContainer>
+          </ProLayout>
+      }
+      <SettingDrawer
+        pathname={window.location.pathname}
+        enableDarkTheme
+        getContainer={() => document.getElementById('test-pro-layout')}
+        settings={settings}
+        onSettingChange={(changeSetting) => setSetting(changeSetting)}
+        disableUrlParams={true}
+      />
+    </div>
   )
 }
 

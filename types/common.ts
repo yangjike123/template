@@ -10,7 +10,7 @@ export type ICommonField = {
 // 通用的分页参数
 export type ICommonPaginatin = {
     current: number | 1; // 当前页码  默认1
-    pageSize: number | 10; // 每页数量  默认10
+    pageSize: number | 20; // 每页数量  默认20
 }
 
 // 返回结果类型 数组

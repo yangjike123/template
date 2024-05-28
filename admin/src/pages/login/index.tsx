@@ -4,13 +4,19 @@ import { useEffect, useState } from "react";
 import { setToken } from "../../../utils/request";
 import { getCaptcha, login } from "../../api/login";
 import { message } from "antd";
+import { useNavigate } from 'react-router-dom';
 
 export default () => {
     const [codeImage, setCodeImage] = useState<string>('');
+    const onNav = useNavigate();
     async function onSubmit(values: IAccountLogin) {
         const { data } = await login(values);
         message.success('登录成功');
         setToken(data.token);
+        setTimeout(() => {
+            onNav('/');
+            location.reload();
+        }, 1200);
     }
     async function getCode() {
         const { data } = await getCaptcha();
