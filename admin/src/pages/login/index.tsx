@@ -1,14 +1,19 @@
 import { LoginForm, ProForm, ProFormText } from "@ant-design/pro-components"
 import { IAccountLogin } from "../../../../types/IAccount";
 import { useEffect, useState } from "react";
-import { requsetGet } from "../../../utils/request";
+import { setToken } from "../../../utils/request";
+import { getCaptcha, login } from "../../api/login";
+import { message } from "antd";
+
 export default () => {
     const [codeImage, setCodeImage] = useState<string>('');
-    function onSubmit(values: IAccountLogin) {
-        console.log('values: ', values);
+    async function onSubmit(values: IAccountLogin) {
+        const { data } = await login(values);
+        message.success('登录成功');
+        setToken(data.token);
     }
     async function getCode() {
-        const { data } = await requsetGet<{ data: string }>('user/code');
+        const { data } = await getCaptcha();
         setCodeImage(data.replace('<svg', "<svg style='border-radius: 6px;'"));
     }
     useEffect(() => {
@@ -18,7 +23,7 @@ export default () => {
         <LoginForm
             logo="https://github.githubassets.com/favicons/favicon.png"
             title="XXX管理平台"
-            subTitle="全球最大的代码托管平台"
+            subTitle={"全球最大的代码托管平台"}
             onFinish={onSubmit}
         >
             <ProFormText>
@@ -52,7 +57,11 @@ export default () => {
                         width={220}
                     >
                     </ProFormText>
-                    <div onClick={getCode} dangerouslySetInnerHTML={{ __html: codeImage }}></div>
+                    <div
+                        onClick={getCode}
+                        style={{ cursor: 'pointer' }}
+                        dangerouslySetInnerHTML={{ __html: codeImage }}
+                    ></div>
                 </ProForm.Group>
             </ProFormText>
         </LoginForm>
