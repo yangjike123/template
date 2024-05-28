@@ -1,22 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { ELoginStatus } from "../../utils/Enum";
-export enum ELogin {
-    KEY = 'NLogin',
-    LOGIN = 'LOGIN',
-    GETUSERINFO = 'GETUSERINFO',
+import { IAccount, IAccountDetail, IAccountLogin } from "../../../types/IAccount";
+import { requsetGet, requsetPost } from "../../utils/request";
+// 登录
+export async function login(data: IAccountLogin) {
+    return requsetPost<IAccountDetail>('user/login', data);
 }
-
-export default createSlice({
-    name: ELogin.KEY,
-    initialState: {
-        loginStatus: ELoginStatus.Loading
-    },
-    reducers: {
-        [ELogin.LOGIN]: (state, { payload }) => {
-            // state.loginStatus 
-        },
-        [ELogin.GETUSERINFO]: () => {
-
-        }
-    }
-})
+// 获取用户信息
+export async function getUserInfo() {
+    return requsetGet<IAccount>('user/userinfo');
+}
+// 验证码
+export async function getCaptcha() {
+    return requsetGet<{ data: string }>('user/code');
+}
