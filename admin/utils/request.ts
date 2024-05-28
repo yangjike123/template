@@ -1,13 +1,14 @@
 
-import axios, { Method, RawAxiosRequestHeaders, AxiosHeaders, AxiosRequestConfig } from "axios";
+import axios, { Method, RawAxiosRequestHeaders, AxiosRequestConfig } from "axios";
 import cookies from "js-cookie";
 import { ECookies } from "../../types/ECookies";
-export const requestUrl = 'http://127.0.0.1:3000/v1/api/'; // 请求服务前缀
+import { message } from "antd";
+export const requestUrl = import.meta.env.VITE_REQUEST_URL; // 请求服务前缀
 
 export function requsetGet<T>(url: string, data?: any) {
     return requset<T>(url, 'GET', data);
 }
-export function requsetPost<T>(url: string, data: any) {
+export function requsetPost<T>(url: string, data?: any) {
     return requset<T>(url, 'POST', data);
 }
 export function requsetPut<T>(url: string, data?: any) {
@@ -49,8 +50,9 @@ function requset<T>(url: string, method: Method, data?: any): Promise<T> {
             ...options,
         }).then(({ data }) => {
             data.status === 200 && resolve(data as T);
-        }).catch((err) => {
-            reject(err);
+        }).catch(({response}) => {
+            message.error(response.data.message);
+            reject(response.data.message);
         });
     })
 }
