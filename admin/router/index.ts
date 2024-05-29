@@ -1,12 +1,15 @@
 import { createElement, lazy } from 'react';
+import { IRouter } from './types';
 import * as icons from '@ant-design/icons';
-import { IMenu } from '../../types/IMenu';
+import { IRouters } from '../../types/IMenu';
+
 function Icon(props: { icon: string }) {
     const { icon } = props;
     const antIcon: { [key: string]: any } = icons;
     return createElement(antIcon[icon]);
 };
-const defaultRouters = [
+
+const defaultRouters: IRouters[] = [
     {
         path: '/',
         component: lazy(() => import('../src/pages/home')),
@@ -47,7 +50,7 @@ const defaultRouters = [
 
 ]
 
-const router = {
+const router: IRouter = {
     route: {
         path: '/',
         location: {
@@ -61,4 +64,4 @@ const router = {
 
 };
 
-export default router as { route: { routes: Omit<IMenu, 'id'>[], path: string, location: { pathname: string } } };
+export default router;
