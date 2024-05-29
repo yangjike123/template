@@ -9,10 +9,11 @@ const whiteList = ['/user/login', '/user/code'];
 export default async function varifyJwt(req: Request, res: Response, next: NextFunction) {
     try {
         const url = req.url.replace(config.apiPrefix, '');
+        const token = req.cookies[config.cookieName];
         if (whiteList.includes(url)) return next(); // 如果在白名单内跳过
         else { // 不在白名单内校验token
-            if (!req.headers.authorization) throw HttpCodeMsg.Unauthorized; // 如果没有token结束返回
-            const { userId } = jwt.verify(req.headers.authorization, config.jwtSecret) as IJwtInfo & JwtPayload;
+            if (!token) throw HttpCodeMsg.Unauthorized; // 如果没有token结束返回
+            const { userId } = jwt.verify(token, config.jwtSecret) as IJwtInfo & JwtPayload;
             if (!userId) throw HttpCodeMsg.Unauthorized; // 如果里面没有userId结算返回
             else {
                 const user = await AccountModel.findByPk(userId);
