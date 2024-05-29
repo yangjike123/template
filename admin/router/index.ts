@@ -36,6 +36,13 @@ const defaultRouters: IRouters[] = [
         ]
     },
     {
+        path: 'userinfo',
+        name: '用户信息',
+        icon: Icon({ icon: 'UserOutlined' }),
+        component: lazy(() => import('../src/pages/userinfo')),
+        hideInMenu: true,
+    },
+    {
         path: '/login',
         component: lazy(() => import('../src/pages/login')),
         name: '登录',
