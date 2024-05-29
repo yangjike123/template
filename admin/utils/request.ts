@@ -24,6 +24,9 @@ export function setToken(token: string) {
     if (!token) throw new Error('token is null');
     return cookies.set(ECookies.TOKENCOOKIENAME, token);
 }
+export function removeToken(removeKey: string = ECookies.TOKENCOOKIENAME) {
+    return cookies.remove(removeKey);
+}
 
 function requset<T>(url: string, method: Method, data?: any): Promise<T> {
     const options: AxiosRequestConfig & { headers: RawAxiosRequestHeaders } = {
@@ -50,7 +53,7 @@ function requset<T>(url: string, method: Method, data?: any): Promise<T> {
             ...options,
         }).then(({ data }) => {
             data.status === 200 && resolve(data as T);
-        }).catch(({response}) => {
+        }).catch(({ response }) => {
             message.error(response.data.message);
             reject(response.data.message);
         });
