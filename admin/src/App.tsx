@@ -1,7 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useState } from 'react';
 import { PageContainer, PageLoading, ProCard, ProLayout, ProSettings, SettingDrawer } from '@ant-design/pro-components';
-import { getUserInfo } from "./api/login";
+import { getUserInfo, logout } from "./api/login";
 import { ELoginStatus } from "../utils/Enum";
 import { IAccountDetail } from "../../types/IAccount";
 import { IMenu } from "../../types/IMenu";
@@ -10,7 +10,6 @@ import { LogoutOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
 import defaultRoute from '../router';
 import './App.css';
 import { changePassword } from "./api/account";
-import { removeToken } from "../utils/request";
 enum DropdownItem {
   userinfo = 'userinfo',
   changePassword = 'changePassword',
@@ -36,6 +35,7 @@ function App() {
       setUserInfo(data);
       setIsLogin(ELoginStatus.Authorization);
     } catch (error) {
+      onNav('/login'); // 如果未登录，跳转到登录页面
       setIsLogin(ELoginStatus.NotAuthorization);
     }
   }
@@ -77,15 +77,12 @@ function App() {
         Modal.confirm({
           title: '确定要退出登录吗?',
           onOk: async () => {
-            removeToken();
+            await logout();
             message.success('退出登录成功');
-            return new Promise((resolve) => {
-              setTimeout(() => {
-                onNav('/login');
-                resolve(true);
-                location.reload();
-              }, 1200);
-            })
+            setTimeout(() => {
+              onNav('/login');
+              location.reload();
+            }, 1000);
           }
         })
         break;
@@ -97,17 +94,31 @@ function App() {
   }, [])
 
   const routerRender = (data: Omit<IMenu, 'id'>[]) => {
-    return data.map((item) => {
-      return (
-        <Route
-          key={item.path}
-          path={item.path}
-          element={item.component && <item.component />}
-        >
-          {item.children && item.children.length > 0 && routerRender(item.children)}
-        </Route>
-      )
-    })
+    // console.log('isLogin: ', isLogin);
+    if (isLogin === ELoginStatus.NotAuthorization) {
+      return data.filter(t => ['/login', '*'].includes(t.path)).map(item => {
+        return (
+          <Route
+            key={item.path}
+            path={item.path}
+            element={item.component && <item.component />}
+          ></Route>
+        )
+      })
+    } else if (isLogin === ELoginStatus.Authorization) {
+      return data.map((item) => {
+        return (
+          <Route
+            key={item.path}
+            path={item.path}
+            element={item.component && <item.component />}
+          >
+            {item.children && item.children.length > 0 && routerRender(item.children)}
+          </Route>
+        )
+      })
+    }
+
   }
   if (isLogin === ELoginStatus.Loading) {
     return <PageLoading />;

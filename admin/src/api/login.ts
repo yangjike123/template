@@ -12,3 +12,7 @@ export async function getUserInfo() {
 export async function getCaptcha() {
     return requsetGet<{ data: string }>('user/code');
 }
+// 退出登录
+export async function logout() {
+    return requsetPost('user/logout');
+}
