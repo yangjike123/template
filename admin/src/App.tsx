@@ -3,7 +3,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { PageContainer, PageLoading, ProCard, ProLayout, ProSettings, SettingDrawer } from '@ant-design/pro-components';
 import { getUserInfo } from "./api/login";
 import { ELoginStatus } from "../utils/Enum";
-import { IAccount } from "../../types/IAccount";
+import { IAccountDetail } from "../../types/IAccount";
 import defaultRoute from '../router';
 import Login from "./pages/login";
 import './App.css';
@@ -12,7 +12,7 @@ import { IMenu } from "../../types/IMenu";
 function App() {
   const onNav = useNavigate();
   const [isLogin, setIsLogin] = useState<ELoginStatus>(ELoginStatus.Loading);
-  const [userInfo, setUserInfo] = useState<IAccount | null>(null);
+  const [userInfo, setUserInfo] = useState<IAccountDetail | null>(null);
   const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
     "fixSiderbar": true,
     "layout": "mix",
@@ -44,33 +44,20 @@ function App() {
   useEffect(() => {
     getUserInfoData();
   }, [])
-  const routerRender = (
-    <Suspense fallback={<PageLoading />}>
-      <Routes>
-        {defaultRoute.route.routes.map((item) => {
-          return (
-            <Route
-              key={item.path}
-              path={item.path}
-              element={item.component && <item.component />}
-            >
-              {
-                item.children && item.children.length > 0 && item.children.map((child: IMenu) => {
-                  return (
-                    <Route
-                      key={child.path}
-                      path={child.path}
-                      element={child.component && <child.component />}
-                    />
-                  )
-                })
-              }
-            </Route>
-          )
-        })}
-      </Routes>
-    </Suspense>
-  )
+
+  const routerRender = (data: Omit<IMenu, 'id'>[]) => {
+    return data.map((item) => {
+      return (
+        <Route
+          key={item.path}
+          path={item.path}
+          element={item.component && <item.component />}
+        >
+          {item.children && item.children.length > 0 && routerRender(item.children)}
+        </Route>
+      )
+    })
+  }
   return (
     <div
       id="test-pro-layout"
@@ -81,6 +68,17 @@ function App() {
         isLogin === ELoginStatus.NotAuthorization ?
           <Login /> :
           <ProLayout
+            avatarProps={{
+              render: () => {
+                return <div>{userInfo?.data?.account}</div>
+              }
+            }}
+            menuItemRender={(item, dom) => {
+              return <div onClick={() => onNavigate(item.path as string)}>{dom}</div>
+            }}
+            location={{
+              pathname: window.location.pathname,
+            }}
             menuFooterRender={(props) => {
               if (props?.collapsed) return undefined;
               return (
@@ -95,12 +93,6 @@ function App() {
                 </div>
               );
             }}
-            menuItemRender={(item, dom) => {
-              return <div onClick={() => onNavigate(item.path as string)}>{dom}</div>
-            }}
-            location={{
-              pathname: window.location.pathname,
-            }}
             {...defaultRoute}
             {...settings}
           >
@@ -110,7 +102,11 @@ function App() {
                   height: '100vh',
                   minHeight: 800,
                 }}>
-                {routerRender}
+                <Suspense fallback={<PageLoading />}>
+                  <Routes>
+                    {routerRender(defaultRoute.route.routes)}
+                  </Routes>
+                </Suspense>
               </ProCard>
             </PageContainer>
           </ProLayout>
@@ -121,7 +117,7 @@ function App() {
         getContainer={() => document.getElementById('test-pro-layout')}
         settings={settings}
         onSettingChange={(changeSetting) => setSetting(changeSetting)}
-        disableUrlParams={true}
+        disableUrlParams={false}
       />
     </div>
   )
