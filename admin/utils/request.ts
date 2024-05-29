@@ -3,7 +3,8 @@ import axios, { Method, RawAxiosRequestHeaders, AxiosRequestConfig } from "axios
 import cookies from "js-cookie";
 import { ECookies } from "../../types/ECookies";
 import { message } from "antd";
-export const requestUrl = import.meta.env.VITE_REQUEST_URL; // 请求服务前缀
+const { VITE_PROXY_BASE, VITE_REQUEST_URL } = import.meta.env;
+export const requestUrl = VITE_REQUEST_URL; // 请求服务前缀
 
 export function requsetGet<T>(url: string, data?: any) {
     return requset<T>(url, 'GET', data);
@@ -31,8 +32,10 @@ export function removeToken(removeKey: string = ECookies.TOKENCOOKIENAME) {
 function requset<T>(url: string, method: Method, data?: any): Promise<T> {
     const options: AxiosRequestConfig & { headers: RawAxiosRequestHeaders } = {
         headers: {
-            Authorization: getToken()
+            // Authorization: getToken(),
+            // "Access-Control-Allow-Credentials": "true",
         },
+        withCredentials: true,
         method
     };
     switch (method) {
@@ -49,7 +52,8 @@ function requset<T>(url: string, method: Method, data?: any): Promise<T> {
     if (!options.headers.Authorization) delete options.headers.Authorization;
     return new Promise((resolve, reject) => {
         axios({
-            url: requestUrl + url,
+            // url: requestUrl + url,
+            baseURL: VITE_PROXY_BASE + url,
             ...options,
         }).then(({ data }) => {
             data.status === 200 && resolve(data as T);
