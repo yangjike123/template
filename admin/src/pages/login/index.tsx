@@ -1,22 +1,20 @@
 import { LoginForm, ProForm, ProFormText } from "@ant-design/pro-components"
 import { IAccountLogin } from "../../../../types/IAccount";
 import { useEffect, useState } from "react";
-import { setToken } from "../../../utils/request";
 import { getCaptcha, login } from "../../api/login";
 import { message } from "antd";
 import { useNavigate } from 'react-router-dom';
-
 export default () => {
+
     const [codeImage, setCodeImage] = useState<string>('');
     const onNav = useNavigate();
     async function onSubmit(values: IAccountLogin) {
-        const { data } = await login(values);
+        await login(values);
         message.success('登录成功');
-        setToken(data.token);
         setTimeout(() => {
             onNav('/');
             location.reload();
-        }, 1200);
+        }, 1000);
     }
     async function getCode() {
         const { data } = await getCaptcha();
@@ -37,7 +35,7 @@ export default () => {
                     name={'account'}
                     rules={[
                         { required: true, message: '请输入登录账号' },
-                        { pattern: /^[\w]{10,11}$/, message: '密码格式错误' }
+                        { pattern: /^[\w]{10,11}$/, message: '账号格式错误' }
                     ]}
                     fieldProps={{
                         prefix: '账号：'
