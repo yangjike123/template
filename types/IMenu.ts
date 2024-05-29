@@ -39,3 +39,5 @@ export interface ISearchMenuParams extends Partial<Pick<IMenu, 'name' | 'path'>>
 export interface IMenuDetail extends ICommonResultObject<IMenu> { };
 // 删除菜单
 export interface IDeleteMenu extends Pick<IMenu, 'id'> { };
+// 菜单数据定义
+export interface IRouters extends Omit<IMenu, 'id'> { };
