@@ -18,7 +18,7 @@ export function exclude<T extends object>(object: T, excludes: Array<keyof T>) {
 export function setQueryPayload<T>(object: T & ICommonPaginatin) {
     const newObj = { ...object, offset: 0, limit: 10 };
     newObj.offset = object.current ? Number(object.current) - 1 : 0;
-    newObj.limit = object.pageSize ? Number(object.pageSize) : 10;
+    newObj.limit = object.pageSize ? Number(object.pageSize) : 20;
     for (const key in object) {
         if (['true', 'false'].includes(object[key])) newObj[key] = object[key] === 'true' ? '1' : '0';
         continue;
