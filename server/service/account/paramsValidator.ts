@@ -70,5 +70,12 @@ export default {
             if (Number.isNaN(Number(value))) return Promise.reject('分页必须为数字');
             else return Promise.resolve(true);
         })
+    ]),
+    updatePassword: verifyPayload([
+        body('password')
+            .notEmpty()
+            .withMessage('密码不能为空')
+            .isLength({ min: 6, max: 12 })
+            .withMessage('密码长度不能小于6或大于12位'),
     ])
 }

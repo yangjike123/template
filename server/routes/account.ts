@@ -10,6 +10,8 @@ route.get('/:id', serviceAccount.getAccountById);
 route.post('/', accountParamsValidator.createAccount, serviceAccount.createAccount);
 // 更新账号
 route.put('/:id', accountParamsValidator.updateAccount, serviceAccount.updateAccount);
+// 修改密码
+route.post('/changePassword', accountParamsValidator.updatePassword, serviceAccount.updatePassword);
 // 删除账号
 route.delete('/:id', serviceAccount.deleteAccount);
 

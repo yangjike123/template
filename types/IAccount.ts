@@ -29,3 +29,5 @@ export interface IAccountLogin extends Pick<IAccount, "account" | "password"> {
     code: string;
 };
 export interface IAccountDelete extends Pick<ICommonField, 'id'> { };
+
+export interface IAccountChangePassword extends Pick<IAccount, 'password'> {};

@@ -112,4 +112,25 @@ async function deleteAccount(req: Request, res: Response) {
     }
 }
 
-export default { createAccount, getAccount, updateAccount, deleteAccount, getAccountById };
+// 修改密码
+async function updatePassword(req: Request, res: Response) {
+    try {
+        const data = await AccountModel.findByPk(req['userId']);
+        const result = await data.update({
+            password: req.body.password,
+            updatedAt: dayjs().format('YYYY-MM-DD HH:mm:ss')
+        });
+        res.status(HttpCode.Ok).json({
+            status: HttpCode.Ok,
+            message: HttpCodeMsg.UpdatedSuccess,
+            data: result.toJSON(),
+        });
+    } catch (error) {
+        res.status(HttpCode.BadRequest).json({
+            status: HttpCode.BadRequest,
+            message: error,
+        });
+    }
+}
+
+export default { createAccount, getAccount, updateAccount, deleteAccount, getAccountById, updatePassword };
