@@ -4,11 +4,18 @@ import { PageContainer, PageLoading, ProCard, ProLayout, ProSettings, SettingDra
 import { getUserInfo } from "./api/login";
 import { ELoginStatus } from "../utils/Enum";
 import { IAccountDetail } from "../../types/IAccount";
-import defaultRoute from '../router';
-import Login from "./pages/login";
-import './App.css';
 import { IMenu } from "../../types/IMenu";
-
+import { Dropdown, Input, Modal, message } from "antd";
+import { LogoutOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
+import defaultRoute from '../router';
+import './App.css';
+import { changePassword } from "./api/account";
+import { removeToken } from "../utils/request";
+enum DropdownItem {
+  userinfo = 'userinfo',
+  changePassword = 'changePassword',
+  logout = 'logout',
+}
 function App() {
   const onNav = useNavigate();
   const [isLogin, setIsLogin] = useState<ELoginStatus>(ELoginStatus.Loading);
@@ -32,7 +39,7 @@ function App() {
       setIsLogin(ELoginStatus.NotAuthorization);
     }
   }
-  function onNavigate(path: string) {
+  function onMenuNavigate(path: string) {
     const findRoute = defaultRoute.route.routes.find(item => item.path === path);
     const children = findRoute?.children;
     if (children) {
@@ -41,6 +48,50 @@ function App() {
       onNav(path);
     }
   }
+  function onSelectDropdownItem({ key }: { key: string }) {
+    switch (key) {
+      case DropdownItem.userinfo:
+        onNav('/userinfo')
+        break;
+      case DropdownItem.changePassword:
+        let inputValue = '';
+        Modal.confirm({
+          title: '修改密码',
+          maskClosable: false,
+          keyboard: false,
+          content: (<Input.Password onChange={(value) => inputValue = value.target.value} placeholder="请输入新密码 6-12位" />),
+          onOk: async () => {
+            const password = inputValue.trim();
+            if (password.length < 6 || password.length > 12) {
+              message.error('密码长度必须为6-12位');
+              return Promise.reject(false);
+            }
+            await changePassword({ password });
+            message.success('修改成功');
+            return Promise.resolve(true);
+          },
+          onCancel: () => { inputValue = ''; }
+        });
+        break;
+      case DropdownItem.logout:
+        Modal.confirm({
+          title: '确定要退出登录吗?',
+          onOk: async () => {
+            removeToken();
+            message.success('退出登录成功');
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                onNav('/login');
+                resolve(true);
+                location.reload();
+              }, 1200);
+            })
+          }
+        })
+        break;
+    }
+  }
+
   useEffect(() => {
     getUserInfoData();
   }, [])
@@ -58,69 +109,103 @@ function App() {
       )
     })
   }
-  return (
-    <div
-      id="test-pro-layout"
-      style={{
-        height: '100vh',
-      }}>
-      {
-        isLogin === ELoginStatus.NotAuthorization ?
-          <Login /> :
-          <ProLayout
-            avatarProps={{
-              render: () => {
-                return <div>{userInfo?.data?.account}</div>
-              }
-            }}
-            menuItemRender={(item, dom) => {
-              return <div onClick={() => onNavigate(item.path as string)}>{dom}</div>
-            }}
-            location={{
-              pathname: window.location.pathname,
-            }}
-            menuFooterRender={(props) => {
-              if (props?.collapsed) return undefined;
+  if (isLogin === ELoginStatus.Loading) {
+    return <PageLoading />;
+  } else if (isLogin === ELoginStatus.NotAuthorization) {
+    return (
+      <Suspense fallback={<PageLoading />}>
+        <Routes>
+          {routerRender(defaultRoute.route.routes)}
+        </Routes>
+      </Suspense>
+    )
+  } else if (isLogin === ELoginStatus.Authorization) {
+    return (
+      <div
+        id="pro-layout"
+        style={{
+          height: '100vh',
+        }}>
+        <ProLayout
+          avatarProps={{
+            src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+            title: userInfo?.data?.username,
+            render: (_, dom) => {
               return (
-                <div
-                  style={{
-                    textAlign: 'center',
-                    paddingBlockStart: 12,
+                <Dropdown
+                  menu={{
+                    onClick: onSelectDropdownItem,
+                    items: [
+                      {
+                        key: DropdownItem.userinfo,
+                        icon: <UserOutlined />,
+                        label: '个人信息',
+                      },
+                      {
+                        key: DropdownItem.changePassword,
+                        icon: <LockOutlined />,
+                        label: '修改密码',
+
+                      },
+                      {
+                        key: DropdownItem.logout,
+                        icon: <LogoutOutlined />,
+                        label: '退出登录',
+                      },
+                    ],
                   }}
-                >
-                  <div>© 2024 Made with love</div>
-                  <div>by Ant Design</div>
-                </div>
-              );
-            }}
-            {...defaultRoute}
-            {...settings}
-          >
-            <PageContainer title={false}>
-              <ProCard
+                >{dom}</Dropdown>
+              )
+            }
+          }}
+          menuItemRender={(item, dom) => {
+            return <div onClick={() => onMenuNavigate(item.path as string)}>{dom}</div>
+          }}
+          location={{
+            pathname: window.location.pathname,
+          }}
+          menuFooterRender={(props) => {
+            if (props?.collapsed) return undefined;
+            return (
+              <div
                 style={{
-                  height: '100vh',
-                  minHeight: 800,
-                }}>
-                <Suspense fallback={<PageLoading />}>
-                  <Routes>
-                    {routerRender(defaultRoute.route.routes)}
-                  </Routes>
-                </Suspense>
-              </ProCard>
-            </PageContainer>
-          </ProLayout>
-      }
-      <SettingDrawer
-        pathname={window.location.pathname}
-        enableDarkTheme
-        getContainer={() => document.getElementById('test-pro-layout')}
-        settings={settings}
-        onSettingChange={(changeSetting) => setSetting(changeSetting)}
-        disableUrlParams={false}
-      />
-    </div>
-  )
+                  textAlign: 'center',
+                  paddingBlockStart: 12,
+                }}
+              >
+                <div>© 2024 Made with love</div>
+                <div>by Ant Design</div>
+              </div>
+            );
+          }}
+          {...defaultRoute}
+          {...settings}
+        >
+          <PageContainer title={false}>
+            <ProCard
+              style={{
+                height: '100vh',
+                minHeight: 800,
+              }}>
+              <Suspense fallback={<PageLoading />}>
+                <Routes>
+                  {routerRender(defaultRoute.route.routes)}
+                </Routes>
+              </Suspense>
+            </ProCard>
+          </PageContainer>
+        </ProLayout>
+        <SettingDrawer
+          pathname={window.location.pathname}
+          enableDarkTheme
+          getContainer={() => document.getElementById('pro-layout')}
+          settings={settings}
+          onSettingChange={(changeSetting) => setSetting(changeSetting)}
+          disableUrlParams={false}
+        />
+      </div>
+    )
+  }
 }
 
 export default App
