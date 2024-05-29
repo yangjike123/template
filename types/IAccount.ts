@@ -22,10 +22,9 @@ export interface IAccountSearchParams extends ICommonPaginatin, Partial<Omit<IAc
     startTime?: string;
     endTime?: string;
 };
-export interface IAccountDetail extends ICommonResultObject<Omit<IAccount, 'password'> & { token: string }> {
+export interface IAccountDetail extends ICommonResultObject<Omit<IAccount & { token: string }, 'password'>> {
 
 };
-
 export interface IAccountLogin extends Pick<IAccount, "account" | "password"> {
     code: string;
 };
