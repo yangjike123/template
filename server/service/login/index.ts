@@ -20,9 +20,10 @@ async function login(req: Request, res: Response) {
         });
         if (data.password !== md5(password)) throw '密码错误';
         if (!data.status) throw '账号已被禁用';
+        if (!captcha) throw 'cookie中的缓存已被清除';
         if (code.toLocaleLowerCase() !== captcha.toLocaleLowerCase()) throw '验证码错误';
         const token = jwt.sign({ userId: data.id }, config.jwtSecret, { expiresIn: time });
-        res.cookie(config.cookieName, token, { maxAge: time, httpOnly: true, secure: true });
+        res.cookie(config.cookieName, token, { maxAge: time, httpOnly: true });
         res.clearCookie('captcha');
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
@@ -60,7 +61,7 @@ async function getCode(req: Request, res: Response) {
         color: true, //验证码字符是否有颜色，默认是没有，但是如果设置了背景颜色，那么默认就是有字符颜色
         background: '#ccc' //beijing
     });
-    res.cookie('captcha', captcha.text, { maxAge: 60000, httpOnly: true, secure: true });
+    res.cookie('captcha', captcha.text, { maxAge: 60000, httpOnly: true });
     res.status(HttpCode.Ok).json({
         status: HttpCode.Ok,
         message: HttpCodeMsg.Ok,
@@ -69,7 +70,7 @@ async function getCode(req: Request, res: Response) {
 }
 // 退出登录
 async function logout(req: Request, res: Response) {
-    res.clearCookie(config.cookieName, { httpOnly: true, secure: true });
+    res.clearCookie(config.cookieName, { httpOnly: true });
     res.status(HttpCode.Ok).json({
         status: HttpCode.Ok,
         message: HttpCodeMsg.Ok,
