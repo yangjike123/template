@@ -51,7 +51,7 @@ function App() {
   function onSelectDropdownItem({ key }: { key: string }) {
     switch (key) {
       case DropdownItem.userinfo:
-        onNav('/userinfo')
+        onNav('/userinfo');
         break;
       case DropdownItem.changePassword:
         let inputValue = '';
@@ -84,7 +84,7 @@ function App() {
               location.reload();
             }, 1000);
           }
-        })
+        });
         break;
     }
   }
@@ -94,7 +94,6 @@ function App() {
   }, [])
 
   const routerRender = (data: Omit<IMenu, 'id'>[]) => {
-    // console.log('isLogin: ', isLogin);
     if (isLogin === ELoginStatus.NotAuthorization) {
       return data.filter(t => ['/login', '*'].includes(t.path)).map(item => {
         return (
