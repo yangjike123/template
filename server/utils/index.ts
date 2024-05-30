@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import os from 'os';
 import { ICommonPaginatin } from '../../types/common';
 
 export function md5(str: string) {
@@ -52,4 +53,15 @@ export function combineChildren<T>(data: T[], options: CombineChildrenOptions = 
     }
     fn(data);
     return tree;
+}
+
+export function getLocalIpAddress(): string[] {
+    const ipAddress = [];
+    const networkInterfaces = os.networkInterfaces();
+    for (const devName in networkInterfaces) {
+        const items = networkInterfaces[devName];
+        const iface = items.find(item => item.family === 'IPv4');
+        if (iface) ipAddress.push(iface.address);
+    }
+    return ipAddress;
 }
