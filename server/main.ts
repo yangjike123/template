@@ -5,6 +5,8 @@ import config from "./config";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import { Sequelize } from "sequelize-typescript";
+import { getLocalIpAddress } from "./utils";
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -21,7 +23,7 @@ function initModels() {
     dialect,
     define,
     timezone,
-    logging: ENVBOL && console.log, // 设置日志输出
+    logging: false && console.log, // 设置日志输出
     models: [__dirname + '/models/*.ts'], // 自动引入models文件夹下的所有模
   });
   sequelize.sync({ force: false, alter: true }).then(() => {
@@ -32,10 +34,9 @@ function initModels() {
   return sequelize;
 }
 initModels();
-
 // 允许跨域
 app.use(function (req, res, next) {
-  // res.header("Access-Control-Allow-Origin", "*"); 
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
@@ -52,7 +53,8 @@ app.use(session({
 }));
 app.use(varifyJwt); // 验证token
 app.use(config.apiPrefix, index);// 接口路由
-
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://127.0.0.1:${port}`);
+  getLocalIpAddress().forEach((ip) => {
+    console.log(`http://${ip}:${port}`);
+  });
 });
