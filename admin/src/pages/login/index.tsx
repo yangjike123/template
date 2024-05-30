@@ -9,12 +9,16 @@ export default () => {
     const [codeImage, setCodeImage] = useState<string>('');
     const onNav = useNavigate();
     async function onSubmit(values: IAccountLogin) {
-        await login(values);
-        message.success('登录成功');
-        setTimeout(() => {
-            onNav('/');
-            location.reload();
-        }, 1000);
+        try {
+            await login(values);
+            message.success('登录成功');
+            setTimeout(() => {
+                onNav('/');
+                location.reload();
+            }, 1000);
+        } catch (error) {
+            getCode();
+        }
     }
     async function getCode() {
         const { data } = await getCaptcha();
