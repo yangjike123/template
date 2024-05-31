@@ -3,8 +3,8 @@ import { HttpCode, HttpCodeMsg } from "./httpCode";
 // 通用字段
 export type ICommonField = {
     readonly id: number; // 主键
-    readonly createdAt?: string; // 创建时间
-    readonly updatedAt?: string; // 更新时间
+    createdAt?: string; // 创建时间
+    updatedAt?: string; // 更新时间
 }
 
 // 通用的分页参数
