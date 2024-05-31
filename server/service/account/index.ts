@@ -78,9 +78,10 @@ async function getAccountById(req: Request, res: Response) {
 // 更新账户
 async function updateAccount(req: Request, res: Response) {
     try {
+        const body = req.body as IAccount;
         const data = await AccountModel.findByPk(req.params.id, { attributes: { exclude: ['password'] } });
         if (!data) throw '账户不存在';
-        const result = await data.update({ ...req.body, updatedAt: dayjs().format('YYYY-MM-DD HH:mm:ss') });
+        const result = await data.update({ ...body, updatedAt: dayjs().format('YYYY-MM-DD HH:mm:ss') });
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
             message: HttpCodeMsg.UpdatedSuccess,
