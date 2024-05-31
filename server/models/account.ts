@@ -35,9 +35,10 @@ export default class AccountModel extends Model {
 
     @Column({
         type: DataType.BOOLEAN,
-        allowNull: true
+        allowNull: true,
+        defaultValue: true
     })
-    status: boolean = true;
+    status: boolean;
 
     @Column({
         type: DataType.STRING,
