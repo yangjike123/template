@@ -13,7 +13,7 @@ export interface IRole extends ICommonField {
     menuIds: number[];
     menus?: IMenu[];
     // 角色等级
-    level: EUserLevel.Admin | EUserLevel.User;
+    level: EUserLevel;
 
 }
 
