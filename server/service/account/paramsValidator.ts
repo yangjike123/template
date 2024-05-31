@@ -46,11 +46,11 @@ export default {
         body('username')
             .notEmpty()
             .withMessage('用户名不能为空'),
-        body('password')
-            .notEmpty()
-            .withMessage('密码不能为空')
-            .isLength({ min: 6 })
-            .withMessage('密码长度不能小于6'),
+        // body('password')
+        //     .notEmpty()
+        //     .withMessage('密码不能为空')
+        //     .isLength({ min: 6 })
+        //     .withMessage('密码长度不能小于6'),
         body('sex')
             .notEmpty()
             .withMessage('性别不能为空').custom((value) => {
