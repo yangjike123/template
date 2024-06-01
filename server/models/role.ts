@@ -49,13 +49,14 @@ export default class RoleModel extends Model {
         comment: '菜单ID集合',
         allowNull: true,
         get() {
-            return this.getDataValue('menuIds').split(',');
+            return this.getDataValue('menuIds').split(',').map(Number);
         },
         set(value: number[]) {
             return this.setDataValue('menuIds', value.join(','));
-        }
+        },
+        defaultValue: ''
     })
-    menuIds: number[] = [];
+    menuIds: number[];
 
     // @BelongsTo(() => MenuModel)
     // menus: MenuModel[];
