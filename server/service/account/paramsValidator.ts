@@ -27,7 +27,7 @@ export default {
         body('sex')
             .notEmpty()
             .withMessage('性别不能为空').custom((value) => {
-                const include = Object.values(ESex).map(String).includes(value);
+                const include = Object.values(ESex).includes(value);
                 if (include) return Promise.resolve(true);
                 else return Promise.reject('性别不合法 —— 1:男 0:女');
             })
