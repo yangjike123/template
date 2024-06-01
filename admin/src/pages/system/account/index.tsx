@@ -7,7 +7,9 @@ import dayjs from "dayjs";
 import { EUserLevel } from "../../../../../types/enum";
 import EditAccount from "./component/EditAccount";
 import { PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from "react-router-dom";
 export default () => {
+    const onNav = useNavigate()
     const tableRef = useRef<ActionType>();
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [editData, setEditData] = useState<IAccount | undefined>(undefined);
@@ -41,7 +43,7 @@ export default () => {
         setOpenModal(true);
     }
 
-    const columns: ProColumns<IAccount, 'id'>[] = [
+    const columns: ProColumns<IAccount>[] = [
         {
             title: '名称',
             dataIndex: 'username',
@@ -56,6 +58,10 @@ export default () => {
             title: '角色',
             dataIndex: ['role', 'name'],
             key: 'roleId',
+            width: 110,
+            render: (text, record) => <Button type="link" onClick={() => {
+                if (record.role) onNav('/system/role', { state: { id: record.role.id } });
+            }}>{text}</Button>
         },
         {
             title: '部门',
