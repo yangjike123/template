@@ -1,19 +1,30 @@
 import { ActionType, ProColumns, ProTable } from "@ant-design/pro-components";
 import { Button, DatePicker, Modal, Space, Switch, message } from 'antd';
-import { getAccountList, updatedAccount } from "../../../api/account"
+import { deleteAccount, getAccountList, updatedAccount } from "../../../api/account"
 import { IAccount, IAccountDelete, IAccountSearchParams, IAccountUpdate } from "../../../../../types/IAccount";
 import { useRef, useState } from "react";
 import dayjs from "dayjs";
 import { EUserLevel } from "../../../../../types/enum";
 import EditAccount from "./component/EditAccount";
-
+import { PlusOutlined } from '@ant-design/icons';
 export default () => {
     const tableRef = useRef<ActionType>();
     const [openModal, setOpenModal] = useState<boolean>(false);
+    const [editData, setEditData] = useState<IAccount | undefined>(undefined);
+    console.log('editData: ', editData);
     function onDeleteAccount(id: IAccountDelete['id']) {
+        Modal.confirm({
+            title: '系统提示',
+            content: '确定要删除该账户吗？',
+            onOk: async () => {
+                await deleteAccount(id);
+                message.success('删除成功');
+                tableRef.current?.reload();
+            }
+        });
 
     }
-    // 编辑账户信息 \ 修改客户登录状态
+    // 修改客户登录状态
     async function onChangeStatus(data: IAccountUpdate) {
         Modal.confirm({
             title: '系统提示',
@@ -25,6 +36,10 @@ export default () => {
                 tableRef.current?.reload();
             },
         });
+    }
+    function onEditAccount(data: IAccount | undefined) {
+        setEditData(data);
+        setOpenModal(true);
     }
 
     const columns: ProColumns<IAccount, 'id'>[] = [
@@ -96,7 +111,7 @@ export default () => {
                 return (
                     <Space>
                         <Button disabled={disabled} danger type="link" onClick={() => onDeleteAccount(record.id)}>删除</Button>
-                        <Button disabled={disabled} type="link" >编辑</Button>
+                        <Button disabled={disabled} type="link" onClick={() => onEditAccount(record)}>编辑</Button>
                     </Space>
                 )
             }
@@ -107,7 +122,6 @@ export default () => {
             <ProTable
                 rowKey={'id'}
                 columns={columns}
-                actionRef={tableRef}
                 request={(params: IAccountSearchParams) => {
                     if (params.createdAt) {
                         params.startTime = dayjs(params.createdAt[0]).format('YYYY-MM-DD 00:00:00');
@@ -116,9 +130,18 @@ export default () => {
                     }
                     return getAccountList(params);
                 }}
+                actionRef={tableRef}
+                toolBarRender={() => [
+                    <Button
+                        key="add"
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => onEditAccount(undefined)}
+                    >创建账号</Button>
+                ]}
             >
             </ProTable>
-            <EditAccount reload={tableRef.current?.reload} openModal={openModal} setOpenModal={setOpenModal} />
+            <EditAccount reload={tableRef.current?.reload} data={editData} openModal={openModal} setOpenModal={setOpenModal} />
         </main>
     )
 }
