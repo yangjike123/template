@@ -14,7 +14,7 @@ export enum EClinetType {
 
 // 性别
 export enum ESex {
-    Male = 1, // 男性
-    Female = 0, // 女性
+    Male = '1', // 男性
+    Female = '0', // 女性
 }
 
