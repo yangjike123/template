@@ -11,7 +11,6 @@ export default () => {
     const tableRef = useRef<ActionType>();
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [editData, setEditData] = useState<IAccount | undefined>(undefined);
-    console.log('editData: ', editData);
     function onDeleteAccount(id: IAccountDelete['id']) {
         Modal.confirm({
             title: '系统提示',
