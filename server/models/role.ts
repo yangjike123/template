@@ -7,6 +7,7 @@
 
 import { Column, Model, Table, DataType, ForeignKey, HasMany, BelongsTo, Unique } from "sequelize-typescript";
 import { EUserLevel } from "../../types/enum";
+import dayjs from "dayjs";
 
 @Table({
     tableName: 'roles',
@@ -58,6 +59,24 @@ export default class RoleModel extends Model {
     })
     menuIds: number[];
 
+    @Column({
+        type: DataType.DATE,
+        get() {
+            const value = this.getDataValue('createdAt');
+            return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : null;
+        },
+        defaultValue: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    })
+    createdAt: string; // 创建时间
+
+    @Column({
+        type: DataType.DATE,
+        get() {
+            const value = this.getDataValue('updatedAt');
+            return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : null;
+        }
+    })
+    updatedAt: string; // 更新时间
     // @BelongsTo(() => MenuModel)
     // menus: MenuModel[];
 }
