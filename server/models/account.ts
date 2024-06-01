@@ -65,7 +65,8 @@ export default class AccountModel extends Model {
         get() {
             const value = this.getDataValue('createdAt');
             return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : null;
-        }
+        },
+        defaultValue: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     })
     createdAt: string; // 创建时间
 
