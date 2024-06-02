@@ -1,11 +1,18 @@
-import { Form, Input, Modal, Select, message } from "antd";
-import { useEffect } from "react";
+import { Form, Input, Modal, Select, Switch, message } from "antd";
+import { useContext, useEffect } from "react";
 import { IRole } from "../../../../../../types/IRole";
 import { createdRole, updatedRole } from "../../../../api/role";
+import { UserInfoData } from "../../../../../Provider";
+import { EUserLevel } from "../../../../../../types/enum";
 
 interface Props extends ModalProps<IRole> { };
 export default function ({ data, openModal, setOpenModal, reload }: Props) {
     const [form] = Form.useForm();
+    const { role } = useContext(UserInfoData);
+    const levelList = [
+        { label: '管理员', value: EUserLevel.Admin },
+        { label: '普通员工', value: EUserLevel.User }
+    ]
 
     function onCancel() {
         setOpenModal(false);
@@ -24,12 +31,12 @@ export default function ({ data, openModal, setOpenModal, reload }: Props) {
         reload && reload();
     }
     useEffect(() => {
-        if (data) {
-            form.setFieldsValue(data)
+        if (openModal) {
+            form.setFieldsValue(data);
         } else {
             form.resetFields();
         }
-    }, [data]);
+    }, [openModal]);
     return (
         <Modal
             title={(data?.id ? "修改" : "创建") + '角色'}
@@ -39,7 +46,25 @@ export default function ({ data, openModal, setOpenModal, reload }: Props) {
             width={'38%'}
         >
             <Form form={form} labelCol={{ span: 4 }}>
+                <Form.Item label="角色名称" name="name" rules={[{ required: true, message: '请输入角色名称' }]}>
+                    <Input placeholder="请输入角色名称" />
+                </Form.Item>
+                {role?.level === EUserLevel.SuperAdmin && (
+                    <Form.Item label="角色类型" name={'level'} rules={[{ required: true, message: '请选择角色类型' }]} >
+                        <Select placeholder={"请选择角色类型"}>
+                            {levelList.map((item, index) => {
+                                return <Select.Option key={index} value={item.value}>{item.label}</Select.Option>
+                            })}
 
+                        </Select>
+                    </Form.Item>
+                )}
+                <Form.Item label="描述" name="description">
+                    <Input.TextArea placeholder="请输入角色描述" />
+                </Form.Item>
+                <Form.Item label="状态" name="status">
+                    <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked={true} />
+                </Form.Item>
             </Form>
         </Modal>
     )
