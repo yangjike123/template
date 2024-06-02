@@ -11,6 +11,9 @@ import dayjs from 'dayjs';
 // 创建账户
 async function createAccount(req: Request, res: Response) {
     try {
+        const count = await AccountModel.count({ where: { roleId: 1 } });
+        if (count === 1) throw '超级管理员已存在';
+
         const data = await AccountModel.create(req.body);
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
@@ -18,7 +21,10 @@ async function createAccount(req: Request, res: Response) {
             data: exclude<IAccount>(data.toJSON(), ['password']),
         });
     } catch (error) {
-        res.status(HttpCode.BadRequest).send(error);
+        res.status(HttpCode.BadRequest).json({
+            status: HttpCode.BadRequest,
+            message: error,
+        });
     }
 }
 
@@ -33,7 +39,7 @@ async function getAccount(req: Request, res: Response) {
         query.status && Object.assign(where, { status: query.status });
         query.roleId && Object.assign(where, { roleId: query.roleId });
         if (query.startTime && query.endTime) Object.assign(where, { createdAt: { [Op.between]: [query.startTime, query.endTime] } });
-        
+
         const { count, rows } = await AccountModel.findAndCountAll({
             attributes: { exclude: ['password'] },
             include: [RoleModel, DepartmentModel],
@@ -48,6 +54,8 @@ async function getAccount(req: Request, res: Response) {
             data: rows,
             total: count,
         });
+        // console.log('count: ', count);
+        return count;
     } catch (error) {
         res.status(HttpCode.BadRequest).json({
             status: HttpCode.BadRequest,
@@ -80,6 +88,9 @@ async function getAccountById(req: Request, res: Response) {
 // 更新账户
 async function updateAccount(req: Request, res: Response) {
     try {
+        const count = await AccountModel.count({ where: { roleId: 1 } });
+        if (count === 1) throw '超级管理员已存在';
+
         const body = req.body as IAccount;
         const data = await AccountModel.findByPk(req.params.id, { attributes: { exclude: ['password'] } });
         if (!data) throw '账户不存在';
