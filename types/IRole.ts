@@ -7,8 +7,8 @@ export interface IRole extends ICommonField {
     name: string;
     // 角色状态
     status: boolean;
-    // 角色备注
-    remark?: string;
+    // 角色描述
+    description?: string;
     // 角色菜单
     menuIds: number[];
     menus?: IMenu[];

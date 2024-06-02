@@ -33,10 +33,10 @@ export default class RoleModel extends Model {
 
     @Column({
         type: DataType.STRING,
-        comment: '备注信息',
+        comment: '描述信息',
         allowNull: true,
     })
-    remark: string;
+    description: string;
 
     @Column({
         type: DataType.ENUM(EUserLevel.SuperAdmin.toString(), EUserLevel.Admin.toString(), EUserLevel.User.toString()),
