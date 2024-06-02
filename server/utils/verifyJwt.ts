@@ -16,7 +16,7 @@ export default async function varifyJwt(req: Request, res: Response, next: NextF
             const { userId } = jwt.verify(token, config.jwtSecret) as IJwtInfo & JwtPayload;
             if (!userId) throw HttpCodeMsg.Unauthorized; // 如果里面没有userId结算返回
             else {
-                const user = await AccountModel.findByPk(userId);
+                const user = await AccountModel.findByPk(userId, { include: ['role'] });
                 if (!user) throw HttpCodeMsg.Unauthorized; // 如果userId查询失败结束返回
                 else {
                     req['user'] = user.toJSON();
