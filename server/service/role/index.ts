@@ -5,11 +5,16 @@ import { ICreateRole, IRoleSearchParams, IUpdateRole } from '../../../types/IRol
 import { HttpCode, HttpCodeMsg } from '../../../types/httpCode';
 import { Op } from 'sequelize';
 import dayjs from 'dayjs';
+import { EUserLevel } from '../../../types/enum';
 
 // 创建角色
 async function createRole(req: Request, res: Response) {
     try {
         const body = req.body as ICreateRole;
+        const user = req['user'];
+        if (user.role.level === EUserLevel.Admin) {
+            body.level = EUserLevel.User;
+        }
         const data = await RoleModel.create(body);
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
