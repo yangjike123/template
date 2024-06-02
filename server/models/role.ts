@@ -5,7 +5,7 @@
 // import MenuModel from './menu';
 // import AccountModel from './account';
 
-import { Column, Model, Table, DataType, ForeignKey, HasMany, BelongsTo, Unique } from "sequelize-typescript";
+import { Column, Model, Table, DataType } from "sequelize-typescript";
 import { EUserLevel } from "../../types/enum";
 import dayjs from "dayjs";
 
@@ -29,17 +29,18 @@ export default class RoleModel extends Model {
         comment: '状态',
         defaultValue: true,
     })
-    status: boolean = true;
+    status: boolean;
 
     @Column({
-        comment: '备注信息',
         type: DataType.STRING,
+        comment: '备注信息',
+        allowNull: true,
     })
-    remark: string = '';
+    remark: string;
 
     @Column({
-        comment: '用户级别',
         type: DataType.ENUM(EUserLevel.SuperAdmin.toString(), EUserLevel.Admin.toString(), EUserLevel.User.toString()),
+        comment: '用户级别',
         allowNull: true,
     })
     level?: string;
