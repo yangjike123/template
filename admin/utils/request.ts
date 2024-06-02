@@ -58,8 +58,13 @@ function requset<T>(url: string, method: Method, data?: any): Promise<T> {
         }).then(({ data }) => {
             data.status === 200 && resolve(data as T);
         }).catch(({ response }) => {
-            message.error(response.data.errors.map((t: any) => t.msg).join('\n'));
-            reject(response.data.errors);
+            if (response.data.errors) {
+                message.error(response.data.errors.map((t: any) => t.msg).join('\n'));
+                reject(response.data.errors);
+            } else {
+                message.error(response.data.message);
+                reject(response.data.message);
+            }
         });
     })
 }
