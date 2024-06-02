@@ -15,7 +15,7 @@ export default () => {
     const tableRef = useRef<ActionType>();
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [editData, setEditData] = useState<IAccount | undefined>(undefined);
-    const [roleList, setRoleList] = useState<IRole[]>([])
+    const [roleList, setRoleList] = useState<IRole[]>([]);
     function onDeleteAccount(id: IAccountDelete['id']) {
         Modal.confirm({
             title: '系统提示',
@@ -166,7 +166,13 @@ export default () => {
                 ]}
             >
             </ProTable>
-            <EditAccount reload={tableRef.current?.reload} data={editData} openModal={openModal} setOpenModal={setOpenModal} />
+            <EditAccount
+                reload={tableRef.current?.reload}
+                data={editData}
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                roleList={roleList}
+            />
         </main>
     )
 }
