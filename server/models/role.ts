@@ -1,10 +1,3 @@
-// import { CommonBasics } from './common';
-// import { DataTypes } from "sequelize";
-// import connectSequelize from './db';
-// import { EUserLevel } from '../types/enum';
-// import MenuModel from './menu';
-// import AccountModel from './account';
-
 import { Column, Model, Table, DataType } from "sequelize-typescript";
 import { EUserLevel } from "../../types/enum";
 import dayjs from "dayjs";
@@ -20,9 +13,13 @@ export default class RoleModel extends Model {
     @Column({
         type: DataType.STRING,
         comment: '角色名称',
-        allowNull: false
+        allowNull: false,
+        unique: {
+            name: 'name',
+            msg: '角色名称已存在'
+        }
     })
-    name!: string;
+    name: string;
 
     @Column({
         type: DataType.BOOLEAN,
@@ -51,7 +48,7 @@ export default class RoleModel extends Model {
         comment: '菜单ID集合',
         allowNull: true,
         get() {
-            return this.getDataValue('menuIds').split(',').map(Number);
+            return this.getDataValue('menuIds').split(',').filter(String).map(Number);
         },
         set(value: number[]) {
             return this.setDataValue('menuIds', value.join(','));
