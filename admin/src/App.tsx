@@ -3,13 +3,14 @@ import { Suspense, useEffect, useState } from 'react';
 import { PageContainer, PageLoading, ProCard, ProLayout, ProSettings, SettingDrawer } from '@ant-design/pro-components';
 import { getUserInfo, logout } from "./api/login";
 import { ELoginStatus } from "../utils/Enum";
-import { IAccountDetail } from "../../types/IAccount";
+import { IAccount, IAccountDetail } from "../../types/IAccount";
 import { IMenu } from "../../types/IMenu";
 import { Dropdown, Input, Modal, message } from "antd";
 import { LogoutOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
 import defaultRoute from '../router';
 import './App.css';
 import { changePassword } from "./api/account";
+import { UserInfoData } from '../Provider'
 enum DropdownItem {
   userinfo = 'userinfo',
   changePassword = 'changePassword',
@@ -197,11 +198,13 @@ function App() {
                 height: '100vh',
                 minHeight: 800,
               }}>
-              <Suspense fallback={<PageLoading />}>
-                <Routes>
-                  {routerRender(defaultRoute.route.routes)}
-                </Routes>
-              </Suspense>
+              <UserInfoData.Provider value={userInfo?.data as unknown as IAccount}>
+                <Suspense fallback={<PageLoading />}>
+                  <Routes>
+                    {routerRender(defaultRoute.route.routes)}
+                  </Routes>
+                </Suspense>
+              </UserInfoData.Provider>
             </ProCard>
           </PageContainer>
         </ProLayout>
