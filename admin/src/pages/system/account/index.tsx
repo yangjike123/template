@@ -1,18 +1,21 @@
 import { ActionType, ProColumns, ProTable } from "@ant-design/pro-components";
-import { Button, DatePicker, Modal, Space, Switch, message } from 'antd';
+import { Button, DatePicker, Modal, Select, Space, Switch, message } from 'antd';
 import { deleteAccount, getAccountList, updatedAccount } from "../../../api/account"
 import { IAccount, IAccountDelete, IAccountSearchParams, IAccountUpdate } from "../../../../../types/IAccount";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { EUserLevel } from "../../../../../types/enum";
 import EditAccount from "./component/EditAccount";
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
+import { getRoleList } from "../../../api/role";
+import { IRole } from "../../../../../types/IRole";
 export default () => {
     const onNav = useNavigate()
     const tableRef = useRef<ActionType>();
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [editData, setEditData] = useState<IAccount | undefined>(undefined);
+    const [roleList, setRoleList] = useState<IRole[]>([])
     function onDeleteAccount(id: IAccountDelete['id']) {
         Modal.confirm({
             title: '系统提示',
@@ -43,6 +46,11 @@ export default () => {
         setOpenModal(true);
     }
 
+    useEffect(() => {
+        getRoleList({ pageSize: 2000, current: 1 }).then(({ data }) => {
+            setRoleList(data);
+        });
+    }, [])
     const columns: ProColumns<IAccount>[] = [
         {
             title: '名称',
@@ -61,7 +69,18 @@ export default () => {
             width: 110,
             render: (text, record) => <Button type="link" onClick={() => {
                 if (record.role) onNav('/system/role', { state: { id: record.role.id } });
-            }}>{text}</Button>
+            }}>{text}</Button>,
+            renderFormItem: () => {
+                return (
+                    <Select placeholder="请选择">
+                        {
+                            roleList.map((item, index) => {
+                                return <Select.Option key={index} value={item.id}>{item.name}</Select.Option>
+                            })
+                        }
+                    </Select>
+                )
+            }
         },
         {
             title: '部门',
@@ -136,6 +155,7 @@ export default () => {
                     return getAccountList(params);
                 }}
                 actionRef={tableRef}
+                search={{ defaultCollapsed: false }}
                 toolBarRender={() => [
                     <Button
                         key="add"
