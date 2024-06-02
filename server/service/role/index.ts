@@ -26,6 +26,7 @@ async function getRoleList(req: Request, res: Response) {
     try {
         const query = setQueryPayload(req.query as unknown as IRoleSearchParams);
         const where = {};
+        query.id && Object.assign(where, { id: query.id });
         query.name && Object.assign(where, { name: { [Op.like]: `%${query.name}%` } });
         query.status && Object.assign(where, { status: query.status });
         const { rows, count } = await RoleModel.findAndCountAll({
