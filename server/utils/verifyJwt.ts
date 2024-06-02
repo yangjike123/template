@@ -18,7 +18,10 @@ export default async function varifyJwt(req: Request, res: Response, next: NextF
             else {
                 const user = await AccountModel.findByPk(userId);
                 if (!user) throw HttpCodeMsg.Unauthorized; // 如果userId查询失败结束返回
-                else req['userId'] = userId; // 把userId挂载到req上 
+                else {
+                    req['user'] = user.toJSON();
+                    req['userId'] = userId;
+                }; // 把userId挂载到req上 
                 // 查询数据库 判断用户是否存在
                 next();
             }
