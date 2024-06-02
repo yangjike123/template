@@ -2,10 +2,13 @@ import { Form, Input, Modal, Select, message } from "antd";
 import { useEffect } from "react";
 import { IAccount } from "../../../../../../types/IAccount";
 import { createdAccount, updatedAccount } from "../../../../api/account";
-import { ESex } from "../../../../../../types/enum";
+import { ESex, EUserLevel } from "../../../../../../types/enum";
+import { IRole } from "../../../../../../types/IRole";
 
-interface Props extends ModalProps<IAccount> { };
-export default function ({ data, openModal, setOpenModal, reload }: Props) {
+interface Props extends ModalProps<IAccount> {
+    roleList: IRole[];
+};
+export default function ({ data, openModal, setOpenModal, reload, roleList }: Props) {
     const [form] = Form.useForm();
     const sexMap = [
         { value: ESex.Male, label: '男' },
@@ -68,8 +71,14 @@ export default function ({ data, openModal, setOpenModal, reload }: Props) {
                         ))}
                     </Select>
                 </Form.Item>
-                {/* <Form.Item label="角色" name={'roleId'}></Form.Item>
-                <Form.Item label="部门" name={'departmentId'}></Form.Item> */}
+                <Form.Item label="角色" name={'roleId'}>
+                    <Select placeholder="请选择">
+                        {roleList.filter((item) => item.level !== EUserLevel.SuperAdmin).map((item, index) => {
+                            return <Select.Option key={index} value={item.id}>{item.name}</Select.Option>
+                        })}
+                    </Select>
+                </Form.Item>
+                {/* <Form.Item label="部门" name={'departmentId'}></Form.Item> */}
             </Form>
         </Modal>
     )
