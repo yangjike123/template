@@ -22,7 +22,10 @@ async function createRole(req: Request, res: Response) {
             data,
         });
     } catch (error) {
-        res.status(HttpCode.BadRequest).send(error);
+        res.status(HttpCode.BadRequest).json({
+            status: HttpCode.BadRequest,
+            message: error?.errors[0].message || error,
+        });
     }
 }
 
