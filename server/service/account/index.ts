@@ -40,6 +40,7 @@ async function getAccount(req: Request, res: Response) {
             where,
             offset: query.offset,
             limit: query.limit,
+            order: [['createdAt', 'DESC']],
         });
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
