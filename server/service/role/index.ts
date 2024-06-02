@@ -37,7 +37,8 @@ async function getRoleList(req: Request, res: Response) {
         const { rows, count } = await RoleModel.findAndCountAll({
             where,
             offset: query.offset,
-            limit: query.limit
+            limit: query.limit,
+            order: [['createdAt', 'DESC']],
         });
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
