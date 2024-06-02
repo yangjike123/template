@@ -18,31 +18,19 @@ export interface IRole extends ICommonField {
 }
 
 // 角色列表
-export interface IRoleList extends ICommonResultArray<IRole> {
-
-}
+export interface IRoleList extends ICommonResultArray<IRole> { };
 
 // 角色搜索参数
-export interface IRoleSearchParams extends ICommonPaginatin, Partial<Pick<IRole, 'name'>> {
-
-}
+export interface IRoleSearchParams extends ICommonPaginatin, Partial<Pick<IRole, 'name' | 'status' | 'id'>> { };
 
 // 角色详情
-export interface IRoleDetail extends ICommonResultObject<IRole> {
-
-}
+export interface IRoleDetail extends ICommonResultObject<IRole> { };
 
 // 创建角色
-export interface ICreateRole extends Omit<IRole, "id"> {
-
-}
+export interface ICreateRole extends Omit<IRole, "id"> { };
 
 // 更新角色
-export interface IUpdateRole extends IRole {
-
-}
+export interface IUpdateRole extends IRole { };
 
 // 删除角色
-export interface IDeleteRole extends Pick<IRole, 'id'> {
-
-}
+export interface IDeleteRole extends Pick<IRole, 'id'> { };
