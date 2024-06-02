@@ -56,7 +56,7 @@ export default () => {
         },
         {
             title: '角色描述',
-            dataIndex: 'remark',
+            dataIndex: 'description',
             hideInSearch: true
         },
         {
@@ -127,7 +127,7 @@ export default () => {
                     </Button>
                 ]}
             />
-            <EditRole setOpenModal={setOpenModal} openModal={openModal} reload={tableRef.current?.reload} />
+            <EditRole setOpenModal={setOpenModal} openModal={openModal} data={editData} reload={tableRef.current?.reload} />
         </main>
     )
 }
