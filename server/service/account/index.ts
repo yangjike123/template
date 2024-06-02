@@ -31,8 +31,9 @@ async function getAccount(req: Request, res: Response) {
         query.username && Object.assign(where, { username: { [Op.like]: `%${query.username}%` } });
         query.sex && Object.assign(where, { sex: query.sex });
         query.status && Object.assign(where, { status: query.status });
+        query.roleId && Object.assign(where, { roleId: query.roleId });
         if (query.startTime && query.endTime) Object.assign(where, { createdAt: { [Op.between]: [query.startTime, query.endTime] } });
-
+        
         const { count, rows } = await AccountModel.findAndCountAll({
             attributes: { exclude: ['password'] },
             include: [RoleModel, DepartmentModel],
