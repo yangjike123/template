@@ -28,12 +28,12 @@ export default function ({ data, openModal, setOpenModal, reload }: Props) {
         reload && reload();
     }
     useEffect(() => {
-        if (data) {
+        if (openModal) {
             form.setFieldsValue(data)
         } else {
             form.resetFields();
         }
-    }, [data]);
+    }, [openModal]);
     return (
         <Modal
             title={(data?.id ? "修改" : "创建") + '账户'}
