@@ -1,7 +1,6 @@
 import { ICommonField, ICommonPaginatin, ICommonResultArray, ICommonResultObject } from "./common";
 
 export interface IDepartment extends ICommonField {
-    id: number
     // 部门名称
     name: string;
     // 上级部门id
