@@ -6,16 +6,16 @@ import { message } from "antd";
 const { VITE_PROXY_BASE, VITE_REQUEST_URL } = import.meta.env;
 export const requestUrl = VITE_REQUEST_URL; // 请求服务前缀
 
-export function requsetGet<T>(url: string, data?: any) {
+export function requestGet<T>(url: string, data?: any) {
     return requset<T>(url, 'GET', data);
 }
-export function requsetPost<T>(url: string, data?: any) {
+export function requestPost<T>(url: string, data?: any) {
     return requset<T>(url, 'POST', data);
 }
-export function requsetPut<T>(url: string, data?: any) {
+export function requestPut<T>(url: string, data?: any) {
     return requset<T>(url, 'PUT', data);
 }
-export function requsetDelete<T>(url: string) {
+export function requestDelete<T>(url: string) {
     return requset<T>(url, 'DELETE');
 }
 export function getToken() {
