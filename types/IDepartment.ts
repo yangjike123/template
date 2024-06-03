@@ -1,3 +1,4 @@
+import { IAccount } from "./IAccount";
 import { ICommonField, ICommonPaginatin, ICommonResultArray, ICommonResultObject } from "./common";
 
 export interface IDepartment extends ICommonField {
@@ -7,6 +8,10 @@ export interface IDepartment extends ICommonField {
     departmentParentId?: number;
     // 部门负责人
     departmentLeaderId?: number;
+    departmentLeader: Pick<IAccount, 'account' | 'username' | 'id'>;
+    // 部门人数
+    departmentCount?: number;
+    childern?: IDepartment[];
 };
 
 // 创建部门
