@@ -21,6 +21,7 @@ export interface IAccountList extends ICommonResultArray<IAccount> { };
 export interface IAccountSearchParams extends ICommonPaginatin, Partial<Omit<IAccount, 'password' | 'remark' | 'department' | 'role'>> {
     startTime?: string;
     endTime?: string;
+    keyword?: string;
 };
 export interface IAccountDetail extends ICommonResultObject<Omit<IAccount & { token: string }, 'password'>> {
 
@@ -30,4 +31,4 @@ export interface IAccountLogin extends Pick<IAccount, "account" | "password"> {
 };
 export interface IAccountDelete extends Pick<ICommonField, 'id'> { };
 
-export interface IAccountChangePassword extends Pick<IAccount, 'password'> {};
+export interface IAccountChangePassword extends Pick<IAccount, 'password'> { };
