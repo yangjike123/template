@@ -28,9 +28,9 @@ export function setQueryPayload<T>(object: T & ICommonPaginatin) {
 }
 
 type CombineChildrenOptions = {
-    id?: string,
-    parentId?: string,
-    children?: string
+    id?: string | 'id';
+    parentId?: string | 'parentId';
+    children?: string | 'children';
 }
 export function combineChildren<T>(data: T[], options?: CombineChildrenOptions) {
     const defaultOptions: CombineChildrenOptions = { id: 'id', parentId: 'parentId', children: 'children' };

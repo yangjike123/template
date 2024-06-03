@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { HttpCode, HttpCodeMsg } from '../../../types/httpCode';
 import DepartmentModel from '../../models/department';
 import AccountModel from '../../models/account';
-import { setQueryPayload } from '../../utils';
-import { ICreateDepartment, ISearchDepartmentParams } from '../../../types/IDepartment';
+import { combineChildren, setQueryPayload } from '../../utils';
+import { ICreateDepartment, IDepartment, ISearchDepartmentParams } from '../../../types/IDepartment';
 import { Op } from 'sequelize';
 import dayjs from 'dayjs';
 // 创建部门
@@ -63,7 +63,7 @@ async function getDepartment(req: Request, res: Response) {
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
             message: HttpCodeMsg.Ok,
-            data: rows,
+            data: combineChildren<IDepartment>(JSON.parse(JSON.stringify(rows)), { parentId: 'departmentParentId' }),
             total: count
         });
     } catch (error) {
