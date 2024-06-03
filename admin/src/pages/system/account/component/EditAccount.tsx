@@ -72,10 +72,12 @@ export default function ({ data, openModal, setOpenModal, reload, roleList }: Pr
                     </Select>
                 </Form.Item>
                 <Form.Item label="角色" name={'roleId'}>
-                    <Select placeholder="请选择">
-                        {roleList.filter((item) => item.level !== EUserLevel.SuperAdmin).map((item, index) => {
-                            return <Select.Option key={index} value={item.id}>{item.name}</Select.Option>
-                        })}
+                    <Select
+                        placeholder="请选择"
+                        showSearch
+                        filterOption={(value, options) => (options?.name && options?.name.includes(value.trim()) || false)}
+                        fieldNames={{ label: 'name', value: 'id' }}
+                        options={roleList.filter((item) => item.level !== EUserLevel.SuperAdmin)}>
                     </Select>
                 </Form.Item>
                 {/* <Form.Item label="部门" name={'departmentId'}></Form.Item> */}
