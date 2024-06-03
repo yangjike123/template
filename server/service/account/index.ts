@@ -11,8 +11,7 @@ import dayjs from 'dayjs';
 // 创建账户
 async function createAccount(req: Request, res: Response) {
     try {
-        const count = await AccountModel.count({ where: { roleId: 1 } });
-        if (count === 1) throw '超级管理员已存在';
+        if (req.body.roleId === 1) throw '超级管理员已存在';
 
         const data = await AccountModel.create(req.body);
         res.status(HttpCode.Ok).json({
@@ -88,10 +87,8 @@ async function getAccountById(req: Request, res: Response) {
 // 更新账户
 async function updateAccount(req: Request, res: Response) {
     try {
-        const count = await AccountModel.count({ where: { roleId: 1 } });
-        if (count === 1) throw '超级管理员已存在';
-
         const body = req.body as IAccount;
+        if (body.roleId === 1) throw '超级管理员已存在';
         const data = await AccountModel.findByPk(req.params.id, { attributes: { exclude: ['password'] } });
         if (!data) throw '账户不存在';
         const result = await data.update({ ...body, updatedAt: dayjs().format('YYYY-MM-DD HH:mm:ss') });
