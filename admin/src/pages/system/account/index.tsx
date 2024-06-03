@@ -72,13 +72,13 @@ export default () => {
             }}>{text}</Button>,
             renderFormItem: () => {
                 return (
-                    <Select placeholder="请选择">
-                        {
-                            roleList.map((item, index) => {
-                                return <Select.Option key={index} value={item.id}>{item.name}</Select.Option>
-                            })
-                        }
-                    </Select>
+                    <Select
+                        showSearch
+                        filterOption={(value, options) => (options?.name.includes(value) || false)}
+                        placeholder="请选择"
+                        fieldNames={{ label: 'name', value: 'id' }}
+                        options={roleList}
+                    />
                 )
             }
         },
