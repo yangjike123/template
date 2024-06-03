@@ -10,7 +10,15 @@ export default class DepartmentModel extends Model {
     @Column({ primaryKey: true, autoIncrement: true })
     id: number;
 
-    @Column({ type: DataType.STRING, allowNull: false, comment: '部门名称' })
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+        comment: '部门名称',
+        unique: {
+            name: 'name',
+            msg: '部门名称已存在',
+        }
+    })
     name: string;
 
     @Column({ type: DataType.STRING, allowNull: true, comment: '部门描述' })
