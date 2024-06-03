@@ -28,23 +28,21 @@ export function setQueryPayload<T>(object: T & ICommonPaginatin) {
 }
 
 type CombineChildrenOptions = {
-    id: string,
-    parentId: string,
-    children: string
+    id?: string,
+    parentId?: string,
+    children?: string
 }
-export function combineChildren<T>(data: T[], options: CombineChildrenOptions = {
-    id: 'id',
-    parentId: 'parentId',
-    children: 'children'
-}) {
+export function combineChildren<T>(data: T[], options?: CombineChildrenOptions) {
+    const defaultOptions: CombineChildrenOptions = { id: 'id', parentId: 'parentId', children: 'children' };
+    options && Object.assign(defaultOptions, options);
     const tree: T[] = [];
     const fn = (list: T[]) => {
         for (let index = 0; index < list.length; index++) {
             const item = list[index];
-            const findItem = list.find(v => v[options.id] === item[options.parentId]);
+            const findItem = list.find(v => v[defaultOptions.id] === item[defaultOptions.parentId]);
             if (findItem) {
-                if (!findItem[options.children]) findItem[options.children] = [];
-                findItem[options.children].push(item);
+                if (!findItem[defaultOptions.children]) findItem[defaultOptions.children] = [];
+                findItem[defaultOptions.children].push(item);
             } else {
                 tree.push(item);
             }
