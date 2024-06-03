@@ -37,6 +37,12 @@ async function getAccount(req: Request, res: Response) {
         query.sex && Object.assign(where, { sex: query.sex });
         query.status && Object.assign(where, { status: query.status });
         query.roleId && Object.assign(where, { roleId: query.roleId });
+        query.keyword && Object.assign(where, {
+            [Op.or]: [
+                { account: { [Op.like]: `%${query.keyword}%` } },
+                { username: { [Op.like]: `%${query.keyword}%` } }
+            ]
+        });
         if (query.startTime && query.endTime) Object.assign(where, { createdAt: { [Op.between]: [query.startTime, query.endTime] } });
 
         const { count, rows } = await AccountModel.findAndCountAll({
