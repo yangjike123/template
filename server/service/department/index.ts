@@ -37,7 +37,7 @@ async function updateDepartment(req: Request, res: Response) {
     } catch (error) {
         res.status(HttpCode.BadRequest).json({
             status: HttpCode.BadRequest,
-            message: error
+            message: error?.errors[0].message || error
         })
     }
 }
@@ -54,11 +54,9 @@ async function getDepartment(req: Request, res: Response) {
                 model: AccountModel,
                 as: 'departmentLeader',
                 foreignKey: 'departmentLeaderId',
-                attributes: ['username', 'account']
+                attributes: ['username', 'account', 'id']
             }],
-            where,
-            limit: query.limit,
-            offset: query.offset,
+            where
         });
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
@@ -83,7 +81,7 @@ async function getDepartmentById(req: Request, res: Response) {
                 model: AccountModel,
                 as: 'departmentLeader',
                 foreignKey: 'departmentLeaderId',
-                attributes: ['username', 'account']
+                attributes: ['username', 'account', 'id']
             }]
         });
         if (!data) throw '部门不存在';
@@ -123,11 +121,16 @@ async function deleteDepartment(req: Request, res: Response) {
         });
     }
 }
+// 查询部门绑定的人员
+async function getDepartmentAccount(req: Request, res: Response) {
+
+}
 
 export default {
     createDepartment,
     getDepartment,
     getDepartmentById,
     updateDepartment,
-    deleteDepartment
+    deleteDepartment,
+    getDepartmentAccount
 };
