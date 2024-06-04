@@ -33,6 +33,8 @@ type Options = {
     children?: string | 'children';
 }
 export function combineChildren<T>(data: T[], options?: Options) {
+    if (!Array.isArray(data)) throw new Error('The value passed is not an array type');
+    if (data.length === 0) return [];
     const defaultOptions: Options = { id: 'id', parentId: 'parentId', children: 'children' };
     options && Object.assign(defaultOptions, options);
     const tree: T[] = [];
