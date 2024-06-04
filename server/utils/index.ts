@@ -27,13 +27,13 @@ export function setQueryPayload<T>(object: T & ICommonPaginatin) {
     return newObj as Omit<T, 'current' | 'pageSize'> & { offset: number, limit: number };
 }
 
-type CombineChildrenOptions = {
+type Options = {
     id?: string | 'id';
     parentId?: string | 'parentId';
     children?: string | 'children';
 }
-export function combineChildren<T>(data: T[], options?: CombineChildrenOptions) {
-    const defaultOptions: CombineChildrenOptions = { id: 'id', parentId: 'parentId', children: 'children' };
+export function combineChildren<T>(data: T[], options?: Options) {
+    const defaultOptions: Options = { id: 'id', parentId: 'parentId', children: 'children' };
     options && Object.assign(defaultOptions, options);
     const tree: T[] = [];
     const fn = (list: T[]) => {
