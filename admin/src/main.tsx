@@ -8,7 +8,13 @@ import 'dayjs/locale/zh-cn';
 import { BrowserRouter } from 'react-router-dom';
 dayjs.locale('zh-cn');
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ConfigProvider locale={zhCN} >
+  <ConfigProvider locale={zhCN} theme={{
+    components: {
+      Modal: {
+        titleLineHeight: 2.5,
+      }
+    }
+  }}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
