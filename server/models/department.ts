@@ -1,4 +1,4 @@
-import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import AccountModel from "./account";
 import dayjs from "dayjs";
 
@@ -37,9 +37,6 @@ export default class DepartmentModel extends Model {
         as: 'departmentLeader',
     })
     departmentLeader!: AccountModel;
-
-    @HasMany(() => AccountModel)
-    account!: AccountModel[];
 
     @Column({
         type: DataType.DATE,
