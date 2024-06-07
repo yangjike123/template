@@ -5,7 +5,7 @@ import config from "./config";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import { getLocalIpAddress } from "./utils";
-import initModels from "./config/common";
+import initModels from "./config/db";
 
 const app = express();
 const port = process.env.PORT || 3000;
