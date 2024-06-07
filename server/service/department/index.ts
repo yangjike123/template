@@ -3,13 +3,19 @@ import { HttpCode, HttpCodeMsg } from '../../../types/httpCode';
 import DepartmentModel from '../../models/department';
 import AccountModel from '../../models/account';
 import { combineChildren, setQueryPayload } from '../../utils';
-import { ICreateDepartment, IDepartment, ISearchDepartmentParams } from '../../../types/IDepartment';
+import { ICreateDepartment, IDepartment, ISearchDepartmentParams, IUpdateDepartment } from '../../../types/IDepartment';
 import { Op } from 'sequelize';
 import dayjs from 'dayjs';
 // 创建部门
 async function createDepartment(req: Request, res: Response) {
     try {
-        const data = await DepartmentModel.create(req.body as Request['body'] & ICreateDepartment);
+        const { departmentLeaderId, description, departmentParentId, name } = req.body as ICreateDepartment;
+        const data = await DepartmentModel.create({
+            departmentLeaderId,
+            description,
+            departmentParentId,
+            name
+        });
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
             message: HttpCodeMsg.CreatedSuccess,
@@ -28,7 +34,14 @@ async function updateDepartment(req: Request, res: Response) {
     try {
         const data = await DepartmentModel.findByPk(req.params.id);
         req.body['updatedAt'] = dayjs().format('YYYY-MM-DD HH:mm:ss');
-        await data.update(req.body as ICreateDepartment);
+        const { updatedAt, departmentLeaderId, description, departmentParentId, name } = req.body as IUpdateDepartment;
+        await data.update({
+            updatedAt,
+            departmentLeaderId,
+            description,
+            departmentParentId,
+            name
+        });
         res.status(HttpCode.Ok).json({
             status: HttpCode.Ok,
             message: HttpCodeMsg.UpdatedSuccess,
