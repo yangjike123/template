@@ -1,9 +1,11 @@
-import { Form, Input, Modal, Select, message } from "antd";
-import { useEffect } from "react";
+import { Form, Input, Modal, Select, TreeSelect, message } from "antd";
+import { useEffect, useState } from "react";
 import { IAccount } from "../../../../../../types/IAccount";
 import { createdAccount, updatedAccount } from "../../../../api/account";
 import { ESex, EUserLevel } from "../../../../../../types/enum";
 import { IRole } from "../../../../../../types/IRole";
+import { getDepartmentList } from "../../../../api/department";
+import { IDepartment } from "../../../../../../types/IDepartment";
 
 interface Props extends ModalProps<IAccount> {
     roleList: IRole[];
@@ -14,8 +16,13 @@ export default function ({ data, openModal, setOpenModal, reload, roleList }: Pr
         { value: ESex.Male, label: '男' },
         { value: ESex.Female, label: '女' }
     ];
+    const [departmentTree, setDepartmentTree] = useState<IDepartment[]>([]);
     function onCancel() {
         setOpenModal(false);
+    }
+    async function getDepartment() {
+        const { data } = await getDepartmentList();
+        setDepartmentTree(data);
     }
     async function onOk() {
         const values = await form.validateFields();
@@ -30,6 +37,9 @@ export default function ({ data, openModal, setOpenModal, reload, roleList }: Pr
         onCancel();
         reload && reload();
     }
+    useEffect(() => {
+        getDepartment();
+    }, [])
     useEffect(() => {
         if (openModal) {
             form.setFieldsValue(data)
@@ -80,7 +90,14 @@ export default function ({ data, openModal, setOpenModal, reload, roleList }: Pr
                         options={roleList.filter((item) => item.level !== EUserLevel.SuperAdmin)}>
                     </Select>
                 </Form.Item>
-                {/* <Form.Item label="部门" name={'departmentId'}></Form.Item> */}
+                <Form.Item label="归属部门" name={'departmentId'}>
+                    <TreeSelect
+                        allowClear
+                        treeData={departmentTree}
+                        fieldNames={{ label: 'name', value: 'id' }}
+                        placeholder="请选择"
+                    />
+                </Form.Item>
             </Form>
         </Modal>
     )
