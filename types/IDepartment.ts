@@ -9,8 +9,8 @@ export interface IDepartment extends ICommonField {
     // 部门负责人
     departmentLeaderId?: number;
     departmentLeader?: Pick<IAccount, 'account' | 'username' | 'id'>;
-    // 部门人数
-    departmentCount?: number;
+    // 描述
+    description?: string;
     childern?: IDepartment[];
 };
 
