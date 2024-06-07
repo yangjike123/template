@@ -4,35 +4,13 @@ import varifyJwt from "./utils/verifyJwt";
 import config from "./config";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import { Sequelize } from "sequelize-typescript";
 import { getLocalIpAddress } from "./utils";
+import initModels from "./config/common";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const environmental = process.env.NODE_ENV === 'development' ? 'development' : 'production';
-const ENVBOL = process.env.NODE_ENV === 'development';
-function initModels() {
-  const { database, username, password, host, port, dialect, define, timezone } = config.dbConfig[environmental];
-  const sequelize = new Sequelize({
-    database,
-    username,
-    password,
-    host,
-    port,
-    dialect,
-    define,
-    timezone,
-    logging: false && console.log, // 设置日志输出
-    models: [__dirname + '/models/*.ts'], // 自动引入models文件夹下的所有模
-  });
-  sequelize.sync({ force: false, alter: true }).then(() => {
-    console.log('success');
-  }).catch((err) => {
-    console.log(err);
-  })
-  return sequelize;
-}
+
 initModels();
 // 允许跨域
 app.use(function (req, res, next) {
