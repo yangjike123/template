@@ -32,7 +32,7 @@ type Options = {
     parentId?: string | 'parentId';
     children?: string | 'children';
 }
-export function combineChildren<T>(data: T[], options?: Options) {
+export function combineChildren<T>(data: T[], options?: Options, callback?: (item: T, index: number, data: T[]) => void) {
     if (!Array.isArray(data)) throw new Error('The value passed is not an array type');
     if (data.length === 0) return [];
     const defaultOptions: Options = { id: 'id', parentId: 'parentId', children: 'children' };
@@ -41,6 +41,7 @@ export function combineChildren<T>(data: T[], options?: Options) {
     const fn = (list: T[]) => {
         for (let index = 0; index < list.length; index++) {
             const item = list[index];
+            callback && callback(item, index, list);
             const findItem = list.find(v => v[defaultOptions.id] === item[defaultOptions.parentId]);
             if (findItem) {
                 if (!findItem[defaultOptions.children]) findItem[defaultOptions.children] = [];
