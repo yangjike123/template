@@ -2,7 +2,7 @@ import { ISearchDepartmentParams, IGetDepartmentList, ICreateDepartment, IDelete
 import { requestDelete, requestGet, requestPost, requestPut } from "../../utils/request";
 
 //部门列表
-export function getDepartmentList(params: ISearchDepartmentParams) {
+export function getDepartmentList(params?: ISearchDepartmentParams) {
     return requestGet<IGetDepartmentList>('department', params);
 }
 // 创建部门
